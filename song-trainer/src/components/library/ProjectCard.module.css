@@ -1,0 +1,15 @@
+.card { padding: 20px; border: 1px solid var(--line); border-radius: 16px; background: var(--surface); cursor: pointer; transition: border-color 150ms, box-shadow 150ms; }
+.card:hover { border-color: var(--accent); box-shadow: 0 8px 32px rgb(0 0 0 / 20%); }
+.cardTitle { margin: 0 0 .3rem; font: 600 1rem/1.3 var(--sans); color: var(--cream); }
+.artist { color: var(--muted); font-size: .8rem; margin: 0 0 .8rem; }
+.meta { display: flex; gap: 1rem; color: var(--muted); font: .72rem var(--mono); }
+.status { display: flex; align-items: center; gap: .4rem; }
+.dot { width: 6px; height: 6px; border-radius: 999px; }
+.dotPending { background: var(--muted); }
+.dotComplete { background: var(--mint); }
+.dotFailed { background: #e87461; }
+.dotRunning { background: var(--accent); }
+.actions { display: flex; justify-content: flex-end; margin-top: 12px; }
+.deleteBtn { padding: 4px 12px; color: var(--muted); border: 1px solid var(--line); border-radius: 6px; background: transparent; font-size: .72rem; }
+.deleteBtn:hover { color: #e87461; border-color: #e87461; }
+@media (prefers-reduced-motion: reduce) { .card { transition: none; } }

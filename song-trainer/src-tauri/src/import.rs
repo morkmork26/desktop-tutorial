@@ -61,7 +61,10 @@ pub fn validate_audio(path: &Path) -> Result<&'static str, ImportError> {
     Ok(if extension == "wav" { "wav" } else { "mp3" })
 }
 
-pub fn copy_audio_atomically(source: &Path, audio_dir: &Path) -> Result<ImportedAudio, ImportError> {
+pub fn copy_audio_atomically(
+    source: &Path,
+    audio_dir: &Path,
+) -> Result<ImportedAudio, ImportError> {
     let extension = validate_audio(source)?;
     fs::create_dir_all(audio_dir)?;
     let canonical_dir = audio_dir.canonicalize()?;
@@ -92,7 +95,10 @@ pub fn copy_audio_atomically(source: &Path, audio_dir: &Path) -> Result<Imported
 
 fn copy_then_rename(source: &Path, temporary: &Path, destination: &Path) -> io::Result<()> {
     let mut input = File::open(source)?;
-    let mut output = OpenOptions::new().write(true).create_new(true).open(temporary)?;
+    let mut output = OpenOptions::new()
+        .write(true)
+        .create_new(true)
+        .open(temporary)?;
     let mut buffer = vec![0_u8; COPY_BUFFER_BYTES];
     loop {
         let read = input.read(&mut buffer)?;
@@ -134,7 +140,10 @@ mod tests {
         let directory = tempdir().unwrap();
         let source = directory.path().join("not-a-song.mp3");
         write_wav(&source);
-        assert!(matches!(validate_audio(&source), Err(ImportError::InvalidHeader)));
+        assert!(matches!(
+            validate_audio(&source),
+            Err(ImportError::InvalidHeader)
+        ));
     }
 
     #[test]
@@ -147,8 +156,10 @@ mod tests {
         let second = copy_audio_atomically(&source, &destination).unwrap();
         assert_ne!(first.stored_name, second.stored_name);
         assert!(destination.join(first.stored_name).is_file());
-        assert!(!fs::read_dir(destination)
+        assert!(!fs::read_dir(destination).unwrap().any(|entry| entry
             .unwrap()
-            .any(|entry| entry.unwrap().path().extension().is_some_and(|ext| ext == "part")));
+            .path()
+            .extension()
+            .is_some_and(|ext| ext == "part")));
     }
 }

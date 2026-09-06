@@ -6,9 +6,15 @@ use tauri_plugin_sql::{Migration, MigrationKind};
 
 #[tauri::command]
 fn import_audio(app: tauri::AppHandle, source_path: String) -> Result<ImportedAudio, String> {
-    let app_data = app.path().app_data_dir().map_err(|error| error.to_string())?;
-    copy_audio_atomically(std::path::Path::new(&source_path), &audio_directory(app_data))
-        .map_err(|error| error.to_string())
+    let app_data = app
+        .path()
+        .app_data_dir()
+        .map_err(|error| error.to_string())?;
+    copy_audio_atomically(
+        std::path::Path::new(&source_path),
+        &audio_directory(app_data),
+    )
+    .map_err(|error| error.to_string())
 }
 
 pub fn run() {

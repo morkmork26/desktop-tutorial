@@ -1,0 +1,14 @@
+.editor { padding: 20px; border: 1px solid var(--line); border-radius: 16px; background: var(--surface); }
+.title { margin: 0 0 16px; font: 600 1rem/1.3 var(--sans); color: var(--cream); }
+.controls { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+.field { display: grid; gap: 4px; }
+.label { color: var(--muted); font: .72rem var(--mono); }
+.input { padding: 8px 12px; color: var(--cream); border: 1px solid var(--line); border-radius: 8px; background: #141310; font: .85rem var(--mono); }
+.actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.btn { padding: 8px 16px; color: var(--cream); border: 1px solid var(--line); border-radius: 8px; background: transparent; font: 600 .78rem var(--sans); }
+.btn:hover { border-color: var(--accent); }
+.btnPrimary { color: #181510; border-color: var(--accent); background: var(--accent); }
+.btnDanger { color: #e87461; border-color: #e87461; }
+.info { margin-top: 12px; color: var(--muted); font: .72rem var(--mono); }
+.tapArea { display: flex; align-items: center; justify-content: center; min-height: 80px; margin-top: 12px; border: 2px dashed var(--line); border-radius: 12px; color: var(--muted); cursor: pointer; font: 600 .85rem var(--sans); user-select: none; }
+.tapArea:active { border-color: var(--accent); color: var(--accent); }

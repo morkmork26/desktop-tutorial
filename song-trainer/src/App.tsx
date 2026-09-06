@@ -4,7 +4,11 @@ import { MetronomeScheduler } from './audio/MetronomeScheduler'
 import { useTransport } from './audio/useTransport'
 import { BeatGrid } from './components/BeatGrid'
 import { Waveform } from './components/Waveform'
+import { LibraryView } from './components/library/LibraryView'
 import { activeSubdivision, createSteadyBeatMap, validateLoop } from './domain/timing'
+import { useAppStore } from './stores/useAppStore'
+import { MemoryProjectRepository } from './repositories/MemoryProjectRepository'
+import { createImportAdapter } from './adapters/importAdapter'
 import type { LoopRange } from './domain/types'
 import styles from './App.module.css'
 
@@ -17,7 +21,7 @@ function formatTime(milliseconds: number): string {
   return `${Math.floor(seconds / 60)}:${(seconds % 60).toFixed(1).padStart(4, '0')}`
 }
 
-export default function App() {
+function SyncLab() {
   const transport = useMemo(() => new AudioTransport(), [])
   const snapshot = useTransport(transport)
   const beatsRef = useRef(FIXTURE_BEATS)
@@ -26,6 +30,7 @@ export default function App() {
   const [divisions, setDivisions] = useState<1 | 2 | 4>(4)
   const [loop, setLoop] = useState<LoopRange | null>({ startMs: 6_000, endMs: 10_000 })
   const [status, setStatus] = useState('Fixture ready')
+  const closeProject = useAppStore((s) => () => { s.closeProject() })
 
   useEffect(() => {
     transport.load('/fixtures/120-bpm-accented.wav')
@@ -93,7 +98,13 @@ export default function App() {
     <main className={styles.app}>
       <header className={styles.header}>
         <div>
-          <p className={styles.eyebrow}>Rhythm Song Trainer · synchronization lab</p>
+          <p className={styles.eyebrow}>
+            <button
+              onClick={closeProject}
+              style={{ background: 'none', border: 'none', color: 'var(--accent)', cursor: 'pointer', font: 'inherit', padding: 0 }}
+            >← Library</button>
+            {' · '}synchronization lab
+          </p>
           <h1>Feel the phrase.<br /><em>See the pocket.</em></h1>
         </div>
         <div className={styles.clock} aria-live="polite">
@@ -185,4 +196,32 @@ export default function App() {
       </footer>
     </main>
   )
+}
+
+const importAdapter = createImportAdapter()
+
+export default function App() {
+  const view = useAppStore((s) => s.view)
+  const repository = useAppStore((s) => s.repository)
+  const setRepository = useAppStore((s) => (r: Parameters<typeof s.setRepository>[0]) => { s.setRepository(r) })
+
+  useEffect(() => {
+    if (!repository) {
+      if ('__TAURI_INTERNALS__' in window) {
+        void Promise.all([
+          import('@tauri-apps/plugin-sql'),
+          import('./repositories/SqlProjectRepository'),
+        ]).then(([mod, { SqlProjectRepository }]) => {
+          void mod.default.load('sqlite:rhythm-song-trainer.sqlite').then(() => {
+            setRepository(new SqlProjectRepository(mod.default as unknown as ConstructorParameters<typeof SqlProjectRepository>[0]))
+          })
+        })
+      } else {
+        setRepository(new MemoryProjectRepository())
+      }
+    }
+  }, [repository, setRepository])
+
+  if (view === 'library') return <LibraryView importAdapter={importAdapter} />
+  return <SyncLab />
 }

@@ -38,8 +38,10 @@ export function Waveform({ transport, beats, durationMs, currentTimeMs, loop, on
   const loopLeft = loop ? `${(loop.startMs / safeDuration) * 100}%` : '0%'
   const loopWidth = loop ? `${((loop.endMs - loop.startMs) / safeDuration) * 100}%` : '0%'
 
-  const updateBoundary = (which: 'start' | 'end', percent: number) => {
-    if (!loop) return
+  const updateBoundary = (which: 'start' | 'end', clientX: number) => {
+    if (!loop || !containerRef.current) return
+    const rect = containerRef.current.getBoundingClientRect()
+    const percent = ((clientX - rect.left) / rect.width) * 100
     const timeMs = Math.round(Math.max(0, Math.min(100, percent)) / 100 * safeDuration)
     onLoopChange(which === 'start'
       ? { startMs: Math.min(timeMs, loop.endMs - 250), endMs: loop.endMs }
@@ -63,12 +65,12 @@ export function Waveform({ transport, beats, durationMs, currentTimeMs, loop, on
           <button
             aria-label="Move loop start"
             className={styles.handle}
-            onPointerUp={(event) => updateBoundary('start', (event.clientX / window.innerWidth) * 100)}
+            onPointerUp={(event) => updateBoundary('start', event.clientX)}
           />
           <button
             aria-label="Move loop end"
             className={`${styles.handle} ${styles.endHandle}`}
-            onPointerUp={(event) => updateBoundary('end', (event.clientX / window.innerWidth) * 100)}
+            onPointerUp={(event) => updateBoundary('end', event.clientX)}
           />
         </div>
       )}
