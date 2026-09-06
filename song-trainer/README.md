@@ -2,7 +2,7 @@
 
 A private, offline Android practice tool that helps singers see and rehearse rhythmic phrasing.
 
-> Status: Android migration is beginning. The checked-in Tauri desktop code is an earlier prototype retained temporarily as a behavioral reference; it is not the release target.
+> Status: the Android shell and native Media3 synchronization spike compile, lint, and produce APK/AAB artifacts in CI. Physical-device audio verification is the current gate. The checked-in Tauri code remains temporary reference only.
 
 ## Android V1
 
@@ -17,7 +17,7 @@ A private, offline Android practice tool that helps singers see and rehearse rhy
 
 React 19, strict TypeScript, Vite, Capacitor 8, Kotlin, Jetpack Media3, Room/SQLite, CSS Modules, Vitest, JUnit, and Android instrumented tests.
 
-The native Android shell has not yet been scaffolded. The implementation sequence and exact native bridge are documented in [the Android handoff](CHIPAGENTS_HANDOFF.md) and [architecture](docs/architecture.md).
+The implementation sequence and exact native bridge are documented in [the Android handoff](CHIPAGENTS_HANDOFF.md) and [architecture](docs/architecture.md).
 
 ## Current reusable checks
 

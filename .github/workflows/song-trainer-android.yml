@@ -4,12 +4,26 @@ on:
   push:
     branches: [main]
     paths:
-      - 'song-trainer/**'
+      - 'song-trainer/src/**'
+      - 'song-trainer/android/**'
+      - 'song-trainer/public/**'
+      - 'song-trainer/scripts/**'
+      - 'song-trainer/package.json'
+      - 'song-trainer/package-lock.json'
+      - 'song-trainer/*.config.*'
+      - 'song-trainer/tsconfig*.json'
       - '.github/workflows/song-trainer-android.yml'
   pull_request:
     branches: [main]
     paths:
-      - 'song-trainer/**'
+      - 'song-trainer/src/**'
+      - 'song-trainer/android/**'
+      - 'song-trainer/public/**'
+      - 'song-trainer/scripts/**'
+      - 'song-trainer/package.json'
+      - 'song-trainer/package-lock.json'
+      - 'song-trainer/*.config.*'
+      - 'song-trainer/tsconfig*.json'
       - '.github/workflows/song-trainer-android.yml'
   workflow_dispatch:
 

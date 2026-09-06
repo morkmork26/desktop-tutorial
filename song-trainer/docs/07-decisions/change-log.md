@@ -11,6 +11,9 @@ Skip when: You only need the active task or current state.
 - UX: Rebased design on official Android adaptive, edge-to-edge, content, and accessibility guidance plus focused music-practice workflows; prohibited generic generated-dashboard styling.
 - Reuse: Retain tested domain/UI logic and platform-neutral defect fixes; retire Tauri/Rust, Python sidecar, Web Audio production metronome, WaveSurfer media ownership, NSIS, and Windows QA after the Android spike passes.
 - Evidence: Documentation rebaseline only; native Android implementation and physical-device verification remain pending.
+- Implementation: Added Capacitor 8.4.3, Android API 29–36 shell, Kotlin Media3 transport bridge, PCM click processor, native fixture screen, and effective repository-root CI.
+- Verification: GitHub Actions run 34059849771 passed frontend gates, Android unit/lint/build, debug APK, release AAB, and artifact upload; dependency audit is clean.
+- Remaining gate: Physical Android audio QA must prove click/song alignment, loop/seek recovery, and pitch-preserving speed before A2 begins.
 
 ## 2026-09-06
 

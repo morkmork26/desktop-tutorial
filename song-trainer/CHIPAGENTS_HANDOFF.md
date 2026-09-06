@@ -182,6 +182,8 @@ cd android
 
 Run all relevant checks again after the final source change. Browser tests prove shared domain behavior only; they do not prove native file, Room, lifecycle, pitch, click, or latency behavior.
 
-## Immediate next action
+## Current checkpoint and immediate next action
 
-Complete A0: run the current checks, classify the uncommitted changes, commit the Android rebaseline separately, then scaffold Capacitor Android and implement only the native audio spike. Do not build polished screens before that gate passes.
+A0 is complete. A1 compiles and passes Android lint/build in GitHub Actions run 34059849771; the workflow uploaded a debug APK and release AAB under artifact name `rhythm-song-trainer-android`.
+
+Do the physical-device portion of A1 next. Install the debug APK, run the two-minute/seek/loop/50–100% checklist in `docs/audio-qa.md`, and record device/output results. Do not start A2 or polished screens until that gate passes. A compiler success does not prove audible synchronization.

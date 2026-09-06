@@ -9,11 +9,11 @@ delivery_status: not-requested
 owner: root
 branch: main
 base_sha: HEAD
-revision: 6
+revision: 7
 verification_head: none
 verification_source_hash: none
 verified_at: none
-updated_at: 2026-09-06T20:36:07Z
+updated_at: 2026-09-06T21:06:04Z
 ---
 
 # Active Task
@@ -63,4 +63,4 @@ Purpose: Single primary task contract, verifier, retry state, and integration ch
 - Docs Updated: status.md, current-state.md, active-task.md refreshed
 - Remaining Risk: Android architecture has not yet been implemented or proven on hardware
 - Last Updated: 2026-09-06
-- Next Concrete Action: Rebaseline the product as Android-only, document the Capacitor/Kotlin/Media3/Room architecture and researched mobile UX, then migrate through an audio synchronization spike before feature integration.
+- Next Concrete Action: Install the CI debug APK on physical Android hardware and record A1 synchronization, seek, loop, and 50/75/100 percent playback evidence; proceed to A2 only after the gate passes.
