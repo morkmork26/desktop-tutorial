@@ -99,22 +99,22 @@ class NativeSongPlugin : Plugin() {
 
     @PluginMethod
     fun seek(call: PluginCall) = onMain(call) {
-        seekNative(call.getLong("timeMs", 0L))
+        seekNative(call.getLong("timeMs", 0L) ?: 0L)
         call.resolve(snapshot())
     }
 
     @PluginMethod
     fun setSpeed(call: PluginCall) = onMain(call) {
-        val speed = call.getDouble("rate", 1.0).toFloat().coerceIn(0.5f, 1f)
+        val speed = (call.getDouble("rate", 1.0) ?: 1.0).toFloat().coerceIn(0.5f, 1f)
         player.playbackParameters = PlaybackParameters(speed, 1f)
         call.resolve(snapshot())
     }
 
     @PluginMethod
     fun setLoop(call: PluginCall) = onMain(call) {
-        if (call.getBoolean("enabled", false)) {
-            val start = call.getLong("startMs", 0L)
-            val end = call.getLong("endMs", 0L)
+        if (call.getBoolean("enabled", false) ?: false) {
+            val start = call.getLong("startMs", 0L) ?: 0L
+            val end = call.getLong("endMs", 0L) ?: 0L
             if (end - start < 250L) {
                 call.reject("Loop must be at least 250 ms.")
                 return@onMain
@@ -131,8 +131,8 @@ class NativeSongPlugin : Plugin() {
 
     @PluginMethod
     fun setMetronome(call: PluginCall) = onMain(call) {
-        clickProcessor.setEnabled(call.getBoolean("enabled", false))
-        clickProcessor.setVolume(call.getDouble("volume", 0.5).toFloat())
+        clickProcessor.setEnabled(call.getBoolean("enabled", false) ?: false)
+        clickProcessor.setVolume((call.getDouble("volume", 0.5) ?: 0.5).toFloat())
         call.resolve(snapshot())
     }
 
