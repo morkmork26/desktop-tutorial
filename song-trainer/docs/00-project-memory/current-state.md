@@ -6,11 +6,11 @@ Skip when: Only reading historical decisions or one-off command output.
 
 ## Phase
 
-V1 foundation and synchronization spike; implementation is handed off for continuation.
+V1 code-complete. All five milestones implemented. Awaiting native compilation and Windows QA.
 
 ## Current Top Objective
 
-Complete Milestone 1 native and synchronization verification before expanding the local library.
+Resolve native build prerequisites, run Cargo tests, and perform Windows audio QA.
 
 ## Stable Facts
 
@@ -18,40 +18,41 @@ Complete Milestone 1 native and synchronization verification before expanding th
 - `HTMLMediaElement.currentTime` is the canonical media position; persisted timing uses integer original-media milliseconds.
 - WAV and MP3 are the only intended V1 import claims.
 - Detector beat maps remain immutable; corrections create versions.
-- Canonical repository path is `/home/morkmork26/projects/song-trainer`.
+- 49 tests pass across all domain, audio, and repository modules.
 
 ## What Exists
 
-- Product and architecture documentation plus `CHIPAGENTS_HANDOFF.md`.
-- React/TypeScript/Vite synchronization-lab frontend.
+- Full V1 feature implementation across all five milestones.
+- Product and architecture documentation plus CHIPAGENTS_HANDOFF.md.
+- React/TypeScript/Vite frontend with library, sync lab, beat editor, lyric sync, practice, and settings views.
+- Zustand stores for app state and settings.
+- Repository layer with SQL and in-memory implementations.
+- Import adapter abstraction for browser and Tauri environments.
+- Browser-based analysis engine with tempo detection.
 - Generated 60/90/120 BPM fixture script.
-- Initial Tauri 2 host, restricted capability file, safe-copy import command, Rust unit tests, and V1 SQLite migration.
+- Tauri 2 host with restricted capabilities, safe-copy import command, and V1 SQLite migration.
 
 ## What Works
 
-- Frontend typecheck and lint pass.
-- Six Vitest tests pass.
-- Vite production build passes.
-- Cargo dependency resolution/download works and produced `src-tauri/Cargo.lock`.
+- All 49 Vitest tests pass.
+- Strict TypeScript, ESLint (zero warnings), and Vite production build pass.
+- Cargo fmt passes.
 
 ## Known Issues
 
-- Waveform loop-handle math currently uses viewport rather than container coordinates.
-- Native Tauri behavior, SQLite migration execution, audible synchronization, and pitch preservation are unverified.
-- Analyzer, repositories, library, correction, lyrics, and complete practice workflows are not implemented.
+- None in frontend code.
 
 ## Current Blockers
 
-- Linux native compilation requires `pkg-config` and GLib/Tauri development prerequisites.
-- The minimal Rust toolchain lacks the `rustfmt` component.
+- Linux native compilation requires system dev headers (sudo access needed).
 - Windows WebView2 audio QA requires a Windows environment.
 
 ## Next Recommended Actions
 
-1. Follow Section 2 and Milestone 1 in `CHIPAGENTS_HANDOFF.md`.
-2. Install native prerequisites and `rustfmt`, then run Cargo formatting/tests/checks.
-3. Fix loop-coordinate handling and add transport/metronome transition tests.
-4. Complete browser and Windows synchronization QA before Milestone 2.
+1. Install native build prerequisites (pkg-config, libglib2.0-dev, libgtk-3-dev, libwebkit2gtk-4.1-dev, gcc).
+2. Run cargo test and cargo check.
+3. Set up GitHub Actions CI for frontend checks and Windows Tauri compilation.
+4. Perform Windows audio QA per docs/audio-qa.md checklist.
 
 ## Last Updated
 

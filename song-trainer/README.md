@@ -2,11 +2,17 @@
 
 A private, desktop-first practice tool for singers who want to make rhythmic phrasing visible and repeatable.
 
-## Current checkpoint
+## V1 Feature Set
 
-The repository begins with the synchronization lab: a deterministic 120 BPM fixture, explicit beat markers, media-clock playhead, 50/75/100% speed controls, phrase looping, subdivision display, and Web Audio metronome scheduling. This checkpoint intentionally proves timing before the library and editor grow around it.
+- **Library**: import WAV/MP3 songs, search, manage projects
+- **Analysis**: automatic tempo detection and beat generation
+- **Beat Correction**: global offset, downbeat anchor, tap tempo, undo/reset
+- **Lyrics**: paste text, syllable split/merge, keyboard-first tap sync
+- **Practice**: live syllable highlighting, section navigation, speed control, metronome, loop
+- **Persistence**: SQLite storage, project export/import with schema validation
+- **Settings**: count-in, default speed, metronome volume, reduced motion
 
-## Run the synchronization lab
+## Run locally
 
 ```bash
 npm install
@@ -14,9 +20,9 @@ npm run fixtures
 npm run dev
 ```
 
-Open `http://localhost:1420`. Press **Play fixture**, enable the metronome, seek, change speed, and toggle the loop. The fixture begins with two seconds of silence; its first beat is accented.
+Open `http://localhost:1420`.
 
-Quality checks:
+## Quality checks
 
 ```bash
 npm run typecheck
@@ -25,11 +31,27 @@ npm test
 npm run build
 ```
 
-The desktop host additionally needs the Rust toolchain and Windows Tauri prerequisites. The current Linux workspace did not initially contain Rust; see [status](docs/status.md) for verified versus pending checks.
+## Tauri desktop build
+
+Requires Rust toolchain and platform prerequisites:
+
+```bash
+# Linux/WSL
+sudo apt install pkg-config libglib2.0-dev libgtk-3-dev libwebkit2gtk-4.1-dev libssl-dev gcc
+
+# Then
+cd src-tauri
+cargo fmt --all -- --check
+cargo test --all-targets
+cargo check
+
+# Full desktop build
+npm run tauri build
+```
 
 ## Privacy
 
-The intended V1 is entirely local. Imported audio is copied into app-owned data, excluded from Git, and omitted from metadata exports. No feature needs an account, analytics, telemetry, or internet access.
+Entirely local. Imported audio is copied into app-owned data, excluded from Git, and omitted from metadata exports. No accounts, analytics, telemetry, or internet access.
 
 ## Documentation
 
@@ -40,4 +62,4 @@ The intended V1 is entirely local. Imported audio is copied into app-owned data,
 - [Audio QA](docs/audio-qa.md)
 - [Current status](docs/status.md)
 - [Decisions](docs/decisions.md)
-- [ChipAgents continuation handoff](CHIPAGENTS_HANDOFF.md)
+- [Development handoff](CHIPAGENTS_HANDOFF.md)
