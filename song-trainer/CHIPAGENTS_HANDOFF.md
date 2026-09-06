@@ -25,6 +25,10 @@ Use this prompt when opening the project from another device:
 - APK/AAB artifact run: `34059849771` on the preceding code-equivalent checkpoint
 - Current completion estimate: approximately 20–25% of the full Android V1; A0 is complete, A1 is code/CI complete but hardware-gated, and A2–A5 remain.
 
+### Latest physical-device report (A1 failed; do not proceed to A2)
+
+The tester installed the debug APK and reported that the metronome is audible and speed variations work, but moving the seek control forward or backward returns playback to the beginning. An additional metronome beat was also reported in an unclear three-count/"in 3" situation; reproduce it before diagnosing. The phone model, Android version, and output route have not yet been recorded. Treat this as a native synchronization blocker: repair seek recovery and investigate the click timing before starting import, Room, or polished workflow work.
+
 ## Product finish line
 
 ```text

@@ -2,7 +2,7 @@
 
 ## Phase
 
-Android milestone A1 is implemented and CI-verified. Physical-device audio QA is the active gate. The Tauri prototype is retained temporarily as reference but is not the product target.
+Android milestone A1 is implemented and CI-verified, but physical-device QA has found a seek failure. The A1 gate is blocked until native seek recovery and the possible extra-beat report are resolved. The Tauri prototype is retained temporarily as reference but is not the product target.
 
 ## Current top objective
 
@@ -23,17 +23,17 @@ Pass the Media3/metronome synchronization spike on a physical Android device bef
 - Android currently opens a fixture-only synchronization screen; it is not the full product workflow.
 - Main app workflow is not yet integrated or persistently reopenable.
 - Desktop-era Tauri, WaveSurfer, HTML audio, browser analyzer, and nested CI remain until the Android spike provides a safe replacement.
-- Physical Android synchronization, pitch, lifecycle, and storage behavior are unverified.
+- Physical Android synchronization is partially verified: metronome and speed variations were reported working, but forward/backward seeking returns to the beginning and a possible extra metronome beat needs reproduction. Pitch, lifecycle, and storage behavior remain unverified.
 
 ## Next actions
 
-1. Download/install the `rhythm-song-trainer-android` debug APK from CI run 34059849771.
-2. Run the 120 BPM physical-device checks in `docs/audio-qa.md` and record device/output evidence.
-3. Stop and repair the audio pipeline if hardware synchronization fails.
-4. If it passes, implement A2 Android import and Room persistence, then A3–A5 in `CHIPAGENTS_HANDOFF.md`.
+1. Record the phone model, Android version, and audio output used for the report.
+2. Reproduce and repair the seek-to-start failure in the native bridge/audio pipeline.
+3. Reproduce or explain the possible extra metronome beat, then rerun the full physical-device checklist.
+4. Only if A1 passes, implement A2 Android import and Room persistence, then A3–A5 in `CHIPAGENTS_HANDOFF.md`.
 
 Last updated: 2026-09-07
 
 ## Cross-device takeover
 
-The authoritative continuation instructions are in `CHIPAGENTS_HANDOFF.md`, including a copy-paste prompt for another Codex device. The source checkpoint is commit `dbbca5c` on `main`; do not infer completion from CI alone because physical Android audio QA is still pending.
+The authoritative continuation instructions are in `CHIPAGENTS_HANDOFF.md`, including a copy-paste prompt for another Codex device. The source checkpoint before this QA report is commit `dbbca5c` on `main`; the physical report is a blocker, not completion evidence.

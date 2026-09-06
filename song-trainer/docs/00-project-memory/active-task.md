@@ -4,7 +4,7 @@ task_id: rhythm-song-trainer-v1
 parent_task_id: none
 task_kind: primary
 execution_status: active
-verification_status: pending
+verification_status: blocked
 delivery_status: not-requested
 owner: root
 branch: main
@@ -46,7 +46,7 @@ Purpose: Single primary task contract, verifier, retry state, and integration ch
 ## Verifier
 
 - Required Checks: Frontend lint, typecheck, unit tests, production build; Gradle unit/lint/build; Android instrumented integration; physical-device audio QA
-- Manual Acceptance: Android phone/tablet workflow and physical audio QA pending
+- Manual Acceptance: Android physical QA started; seek-forward/seek-back failed and possible extra metronome beat needs reproduction
 - Evidence Needed: fresh command output bound to current HEAD
 
 ## Critic
@@ -54,13 +54,13 @@ Purpose: Single primary task contract, verifier, retry state, and integration ch
 - Pass/Fail: partial-pass
 - Missing Evidence: Capacitor shell, Gradle checks, Android integration, and physical-device audio QA
 - False-Pass Risk: reusable browser/domain tests do not prove native audio, Room, file import, or Android lifecycle behavior
-- Next Action: Finish A0 rebaseline, then implement and test only the native synchronization spike
+- Next Action: Repair native seek recovery and reproduce the possible extra metronome beat before A2
 
 ## Record
 
-- Verification Evidence: pending after checkpoint
+- Verification Evidence: CI A1 passed; physical-device report is a failed/partial gate
 - Delivery Status: not-requested
 - Docs Updated: status.md, current-state.md, active-task.md refreshed
-- Remaining Risk: Android architecture has not yet been implemented or proven on hardware
+- Remaining Risk: Native seek behavior is broken on the tested device; device/output details are not yet recorded; lifecycle, pitch, storage, and analysis remain unverified
 - Last Updated: 2026-09-06
-- Next Concrete Action: Install the CI debug APK on physical Android hardware and record A1 synchronization, seek, loop, and 50/75/100 percent playback evidence; proceed to A2 only after the gate passes.
+- Next Concrete Action: Record device model/API/output, reproduce the seek reset and possible extra click, repair the native pipeline, then rerun the full A1 checklist; do not proceed to A2 until it passes.

@@ -18,6 +18,17 @@ Run after the native synchronization spike, analysis/correction, and release can
 - Switch 50% → 75% → 100% while playing; clicks remain aligned and saved timestamps remain unchanged.
 - Confirm speech/music pitch remains musically stable at all three rates.
 
+## Latest manual report
+
+Date: 2026-09-07. Device model, Android/API version, and output route were not recorded yet.
+
+- **Fail — seek:** dragging the seek control forward or backward returns playback to the beginning instead of seeking to the selected position.
+- **Pass — metronome baseline:** the metronome is audible and runs during playback.
+- **Pass — speed controls:** the tested speed variations work.
+- **Investigate — extra beat:** the tester reported what sounded like an extra metronome beat in one three-count/"in 3" situation. Reproduce with a counted recording before deciding whether this is a click-map or user-interface issue.
+
+This is an A1 blocker. Do not begin A2 import/Room work until seek recovery is fixed and the metronome report is either explained or reproduced as passing.
+
 ## Android lifecycle
 
 - Rotate during paused and playing states; saved edits survive and transport state is coherent.

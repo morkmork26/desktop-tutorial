@@ -7,6 +7,7 @@ Skip when: You only need the active task or current state.
 ## 2026-09-07
 
 - Handoff: Added an exact cross-device takeover prompt and pinned the current source/CI checkpoints so another Codex can resume without treating A1 CI success as full V1 completion.
+- QA: First physical Android report found seek-forward/seek-back returning to the beginning; metronome and speed variations worked, with a possible extra beat requiring reproduction. A1 is blocked before A2.
 - Requirement change: Retargeted Rhythm Song Trainer from Windows desktop to Android only.
 - Architecture: Selected Capacitor 8 + React/TypeScript with a Kotlin plugin owning Media3 transport/click mixing, Android file import and decoding, Room persistence, and local analysis.
 - UX: Rebased design on official Android adaptive, edge-to-edge, content, and accessibility guidance plus focused music-practice workflows; prohibited generic generated-dashboard styling.

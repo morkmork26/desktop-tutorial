@@ -2,7 +2,7 @@
 
 ## Current checkpoint
 
-Android milestone A1 is code-complete and CI-verified; physical-device synchronization QA is required before A2. The former Windows/Tauri prototype is not the target architecture.
+Android milestone A1 is code-complete and CI-verified, but the first physical-device report failed the seek check; A1 remains blocked before A2. The former Windows/Tauri prototype is not the target architecture.
 
 ## Verified reusable baseline
 
@@ -24,6 +24,13 @@ Android milestone A1 is code-complete and CI-verified; physical-device synchroni
 - CI run 34059849771 passed TypeScript, lint, 53 Vitest tests, web build, Kotlin/Gradle tests, Android lint, debug APK, release AAB, and artifact upload.
 - `npm audit` reports zero known vulnerabilities for the pinned dependency set.
 
+## Physical-device gate result
+
+- Reported: metronome audible; speed variations work.
+- Failed: forward/backward seeking returns to the beginning.
+- Needs reproduction: an extra metronome beat was reported in a three-count situation.
+- Device model, Android version, and output route still need to be recorded.
+
 ## Not implemented for Android
 
 - Android document import/private copy.
@@ -38,6 +45,6 @@ Tauri/Rust, HTMLMediaElement as production clock, Web Audio metronome, Python/li
 
 ## Next gate
 
-Install the CI debug APK on physical Android hardware and run the synchronization section of `docs/audio-qa.md`. If it passes, proceed to A2 import and Room persistence. If it fails, repair the audio pipeline before migrating editors.
+Repair and retest native seek recovery, then reproduce the possible extra-beat report. Only after the complete synchronization checklist passes should the project proceed to A2 import and Room persistence.
 
 Last updated: 2026-09-07
