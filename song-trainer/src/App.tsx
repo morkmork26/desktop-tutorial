@@ -30,7 +30,7 @@ function SyncLab() {
   const [divisions, setDivisions] = useState<1 | 2 | 4>(4)
   const [loop, setLoop] = useState<LoopRange | null>({ startMs: 6_000, endMs: 10_000 })
   const [status, setStatus] = useState('Fixture ready')
-  const closeProject = useAppStore((s) => () => { s.closeProject() })
+  const closeProject = useAppStore((s) => s.closeProject)
 
   useEffect(() => {
     transport.load('/fixtures/120-bpm-accented.wav')
@@ -203,7 +203,7 @@ const importAdapter = createImportAdapter()
 export default function App() {
   const view = useAppStore((s) => s.view)
   const repository = useAppStore((s) => s.repository)
-  const setRepository = useAppStore((s) => (r: Parameters<typeof s.setRepository>[0]) => { s.setRepository(r) })
+  const setRepository = useAppStore((s) => s.setRepository)
 
   useEffect(() => {
     if (!repository) {

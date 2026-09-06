@@ -5,10 +5,10 @@ interface Settings {
   defaultSpeed: number
   metronomeVolume: number
   reducedMotion: boolean
-  setCountInBeats(beats: number): void
-  setDefaultSpeed(speed: number): void
-  setMetronomeVolume(volume: number): void
-  setReducedMotion(enabled: boolean): void
+  setCountInBeats: (beats: number) => void
+  setDefaultSpeed: (speed: number) => void
+  setMetronomeVolume: (volume: number) => void
+  setReducedMotion: (enabled: boolean) => void
 }
 
 export const useSettingsStore = create<Settings>((set) => ({

@@ -11,14 +11,14 @@ interface AppState {
   loading: boolean
   error: string | null
   repository: ProjectRepository | null
-  setRepository(repo: ProjectRepository): void
-  loadProjects(): Promise<void>
-  openProject(id: string): Promise<void>
-  closeProject(): void
-  deleteProject(id: string): Promise<void>
-  setSearchQuery(query: string): void
-  searchProjects(): Promise<void>
-  setError(error: string | null): void
+  setRepository: (repo: ProjectRepository) => void
+  loadProjects: () => Promise<void>
+  openProject: (id: string) => Promise<void>
+  closeProject: () => void
+  deleteProject: (id: string) => Promise<void>
+  setSearchQuery: (query: string) => void
+  searchProjects: () => Promise<void>
+  setError: (error: string | null) => void
 }
 
 export const useAppStore = create<AppState>((set, get) => ({

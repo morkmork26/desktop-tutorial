@@ -8,10 +8,11 @@ describe('beatCorrection', () => {
     expect(applyGlobalOffset(beats, 50)).toEqual([150, 650, 1150])
   })
 
-  it('sets downbeat by rotating to closest beat', () => {
+  it('selects the closest beat as downbeat without changing timestamp order', () => {
     const beats = [0, 500, 1000, 1500]
     const result = setDownbeat(beats, 980)
-    expect(result[0]).toBe(1000)
+    expect(result).toBe(1000)
+    expect(beats).toEqual([0, 500, 1000, 1500])
   })
 
   it('generates beats from tap tempo', () => {

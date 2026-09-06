@@ -15,6 +15,7 @@ export interface BeatMapVersion {
   readonly bpm: number | null
   readonly beatsPerBar: number
   readonly beats: readonly Milliseconds[]
+  readonly downbeatTimeMs: Milliseconds | null
   readonly createdAt: string
 }
 
@@ -23,4 +24,5 @@ export interface BeatMapCorrection {
   readonly beats: readonly Milliseconds[]
   readonly bpm: number | null
   readonly beatsPerBar: number
+  readonly downbeatTimeMs: Milliseconds | null
 }

@@ -6,10 +6,10 @@ export function Settings() {
   const defaultSpeed = useSettingsStore((s) => s.defaultSpeed)
   const metronomeVolume = useSettingsStore((s) => s.metronomeVolume)
   const reducedMotion = useSettingsStore((s) => s.reducedMotion)
-  const setCountInBeats = useSettingsStore((s) => (v: number) => { s.setCountInBeats(v) })
-  const setDefaultSpeed = useSettingsStore((s) => (v: number) => { s.setDefaultSpeed(v) })
-  const setMetronomeVolume = useSettingsStore((s) => (v: number) => { s.setMetronomeVolume(v) })
-  const setReducedMotion = useSettingsStore((s) => (v: boolean) => { s.setReducedMotion(v) })
+  const setCountInBeats = useSettingsStore((s) => s.setCountInBeats)
+  const setDefaultSpeed = useSettingsStore((s) => s.setDefaultSpeed)
+  const setMetronomeVolume = useSettingsStore((s) => s.setMetronomeVolume)
+  const setReducedMotion = useSettingsStore((s) => s.setReducedMotion)
 
   return (
     <div className={styles.panel}>

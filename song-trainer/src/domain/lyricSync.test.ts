@@ -64,6 +64,11 @@ describe('lyricSync', () => {
     expect(nudged[0]!.timeMs).toBe(950)
   })
 
+  it('nudges a syllable synchronized at the start of the song', () => {
+    const sylls: TimedSyllable[] = [{ id: 's0', text: 'start', timeMs: 0 }]
+    expect(nudgeTimestamp(sylls, 0, 25)[0]!.timeMs).toBe(25)
+  })
+
   it('clears sync range', () => {
     const sylls: TimedSyllable[] = [
       { id: 's0', text: 'a', timeMs: 100 },

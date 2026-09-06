@@ -8,51 +8,59 @@ import styles from './LyricSync.module.css'
 interface LyricSyncProps {
   readonly currentTimeMs: Milliseconds
   readonly onSeek: (timeMs: Milliseconds) => void
+  readonly initialLines?: readonly SyncedLine[]
+  readonly onLinesChange?: (lines: readonly SyncedLine[]) => void
 }
 
-export function LyricSync({ currentTimeMs, onSeek }: LyricSyncProps) {
-  const [rawText, setRawText] = useState('')
-  const [lines, setLines] = useState<SyncedLine[]>([])
+export function LyricSync({ currentTimeMs, onSeek, initialLines = [], onLinesChange }: LyricSyncProps) {
+  const [rawText, setRawText] = useState(() => initialLines.map((line) => line.text).join('\n'))
+  const [lines, setLines] = useState<SyncedLine[]>(() => [...structuredClone(initialLines)])
   const [syncing, setSyncing] = useState(false)
   const [syncCursor, setSyncCursor] = useState(0)
 
   const handlePaste = useCallback((text: string) => {
     setRawText(text)
-    setLines(createSyncedLines(text))
+    const next = createSyncedLines(text)
+    setLines(next)
+    onLinesChange?.(next)
     setSyncCursor(0)
-  }, [])
+  }, [onLinesChange])
 
   const allSyllables = lines.flatMap((l) => l.tokens.flatMap((t) => t.syllables))
   const activeIdx = activeSyllableIndex(allSyllables, currentTimeMs)
+
+  const rebuildFromFlat = useCallback((flat: TimedSyllable[]) => {
+    let idx = 0
+    setLines((prev) => {
+      const next = prev.map((line) => ({
+        ...line,
+        tokens: line.tokens.map((token) => ({
+          ...token,
+          syllables: token.syllables.map(() => flat[idx++]!),
+        })),
+      }))
+      onLinesChange?.(next)
+      return next
+    })
+  }, [onLinesChange])
 
   const handleSyncTap = useCallback(() => {
     if (!syncing || syncCursor >= allSyllables.length) return
     const updated = applySyncTap(allSyllables, syncCursor, currentTimeMs)
     rebuildFromFlat(updated)
     setSyncCursor((c) => c + 1)
-  }, [syncing, syncCursor, allSyllables, currentTimeMs])
+  }, [syncing, syncCursor, allSyllables, currentTimeMs, rebuildFromFlat])
 
   const handleNudge = useCallback((idx: number, delta: number) => {
     const updated = nudgeTimestamp(allSyllables, idx, delta)
     rebuildFromFlat(updated)
-  }, [allSyllables])
+  }, [allSyllables, rebuildFromFlat])
 
   const handleClearAll = useCallback(() => {
     const updated = clearSyncRange(allSyllables, 0, allSyllables.length - 1)
     rebuildFromFlat(updated)
     setSyncCursor(0)
-  }, [allSyllables])
-
-  function rebuildFromFlat(flat: TimedSyllable[]) {
-    let idx = 0
-    setLines((prev) => prev.map((line) => ({
-      ...line,
-      tokens: line.tokens.map((token) => ({
-        ...token,
-        syllables: token.syllables.map(() => flat[idx++]!),
-      })),
-    })))
-  }
+  }, [allSyllables, rebuildFromFlat])
 
   const handleTokenClick = useCallback((syll: TimedSyllable) => {
     if (syll.timeMs !== null) onSeek(syll.timeMs)
@@ -119,7 +127,7 @@ export function LyricSync({ currentTimeMs, onSeek }: LyricSyncProps) {
               </button>
             )}
             <button className={styles.btn} onClick={handleClearAll}>Clear Timing</button>
-            <button className={styles.btn} onClick={() => { setLines([]); setRawText('') }}>Edit Text</button>
+            <button className={styles.btn} onClick={() => { setLines([]); setRawText(''); onLinesChange?.([]) }}>Edit Text</button>
           </div>
           <p className={styles.hint}>
             {syncing ? 'Press Tap or Space while playing to sync each syllable' : 'Click synced syllables to seek. Arrow keys nudge ±25ms.'}

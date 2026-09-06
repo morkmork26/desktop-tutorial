@@ -64,4 +64,35 @@ describe('MemoryProjectRepository', () => {
     const repo = new MemoryProjectRepository()
     expect(await repo.getById('nonexistent')).toBeNull()
   })
+
+  it('persists analysis and immutable correction versions for reopen', async () => {
+    const repo = new MemoryProjectRepository()
+    const project = await repo.create(input)
+    const analysis = {
+      schemaVersion: 1 as const,
+      durationMs: 2_000,
+      bpm: 120,
+      meter: { beatsPerBar: 4, beatUnit: 4 as const },
+      beatsMs: [0, 500, 1_000, 1_500, 2_000],
+      tempoSegments: [{ startMs: 0, endMs: 2_000, bpm: 120 }],
+      confidence: null,
+      warnings: [],
+    }
+    const detector = await repo.saveAnalysis(project.id, analysis)
+    const corrected = await repo.saveBeatCorrection(project.id, {
+      type: 'offset',
+      beats: [25, 525, 1_025, 1_525],
+      bpm: 120,
+      beatsPerBar: 4,
+      downbeatTimeMs: 25,
+    })
+
+    const reopened = await repo.loadWorkspace(project.id)
+    expect(reopened.analysis).toEqual(analysis)
+    expect(reopened.beatMaps).toHaveLength(2)
+    expect(detector.source).toBe('detector')
+    expect(corrected.parentBeatMapId).toBe(detector.id)
+    expect(corrected.version).toBe(2)
+    expect((await repo.getById(project.id))?.durationMs).toBe(2_000)
+  })
 })

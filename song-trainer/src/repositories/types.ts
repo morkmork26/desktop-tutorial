@@ -1,4 +1,10 @@
 import type { Milliseconds } from '../domain/types'
+import type { AnalysisResult } from '../domain/types'
+import type { BeatMapCorrection, BeatMapVersion } from '../analysis/types'
+import type { SyncedLine } from '../domain/lyricSync'
+import type { PracticeSession } from '../domain/practiceSession'
+import type { Section } from '../domain/sections'
+import type { ProjectWorkspace, SavedLoop } from '../domain/workspace'
 
 export interface ProjectRecord {
   readonly id: string
@@ -7,6 +13,7 @@ export interface ProjectRecord {
   readonly audioStoredName: string
   readonly audioOriginalName: string
   readonly durationMs: Milliseconds
+  readonly audioSourceUrl?: string
   readonly analysisStatus: 'pending' | 'running' | 'complete' | 'failed' | 'cancelled'
   readonly createdAt: string
   readonly updatedAt: string
@@ -19,6 +26,7 @@ export interface CreateProjectInput {
   readonly audioStoredName: string
   readonly audioOriginalName: string
   readonly durationMs: Milliseconds
+  readonly audioSourceUrl?: string
 }
 
 export interface ProjectRepository {
@@ -30,4 +38,11 @@ export interface ProjectRepository {
   touchLastOpened(id: string): Promise<void>
   remove(id: string): Promise<void>
   search(query: string): Promise<readonly ProjectRecord[]>
+  loadWorkspace(projectId: string): Promise<ProjectWorkspace>
+  saveAnalysis(projectId: string, result: AnalysisResult): Promise<BeatMapVersion>
+  saveBeatCorrection(projectId: string, correction: BeatMapCorrection, source?: 'correction' | 'reset'): Promise<BeatMapVersion>
+  saveLyrics(projectId: string, lines: readonly SyncedLine[]): Promise<void>
+  saveSections(projectId: string, sections: readonly Section[]): Promise<void>
+  saveLoops(projectId: string, loops: readonly SavedLoop[]): Promise<void>
+  addPracticeSession(session: PracticeSession): Promise<void>
 }

@@ -5,13 +5,12 @@ export function applyGlobalOffset(beats: readonly Milliseconds[], offsetMs: numb
   return beats.map((t) => Math.max(0, Math.round(t + offsetMs)))
 }
 
-export function setDownbeat(beats: readonly Milliseconds[], downbeatTimeMs: Milliseconds): Milliseconds[] {
+export function setDownbeat(beats: readonly Milliseconds[], downbeatTimeMs: Milliseconds): Milliseconds | null {
   const sorted = [...beats].sort((a, b) => a - b)
-  const closest = sorted.reduce((prev, curr) =>
+  if (sorted.length === 0) return null
+  return sorted.reduce((prev, curr) =>
     Math.abs(curr - downbeatTimeMs) < Math.abs(prev - downbeatTimeMs) ? curr : prev,
   sorted[0] ?? 0)
-  const idx = sorted.indexOf(closest)
-  return sorted.slice(idx).concat(sorted.slice(0, idx))
 }
 
 export function tapTempoBeats(taps: readonly Milliseconds[], durationMs: Milliseconds): Milliseconds[] {
@@ -46,6 +45,7 @@ export function createCorrection(
   beats: readonly Milliseconds[],
   bpm: number | null,
   beatsPerBar: number,
+  downbeatTimeMs: Milliseconds | null = beats[0] ?? null,
 ): BeatMapCorrection {
-  return { type, beats: [...beats].sort((a, b) => a - b), bpm, beatsPerBar }
+  return { type, beats: [...beats].sort((a, b) => a - b), bpm, beatsPerBar, downbeatTimeMs }
 }

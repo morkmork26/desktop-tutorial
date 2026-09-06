@@ -10,11 +10,12 @@ interface BeatEditorProps {
   readonly beatsPerBar: number
   readonly durationMs: Milliseconds
   readonly currentTimeMs: Milliseconds
+  readonly downbeatTimeMs: Milliseconds | null
   readonly onApplyCorrection: (correction: BeatMapCorrection) => void
   readonly onReset: () => void
 }
 
-export function BeatEditor({ beats, bpm, beatsPerBar, durationMs, currentTimeMs, onApplyCorrection, onReset }: BeatEditorProps) {
+export function BeatEditor({ beats, bpm, beatsPerBar, durationMs, currentTimeMs, downbeatTimeMs, onApplyCorrection, onReset }: BeatEditorProps) {
   const [offsetMs, setOffsetMs] = useState(0)
   const [taps, setTaps] = useState<Milliseconds[]>([])
   const [error, setError] = useState<string | null>(null)
@@ -26,13 +27,16 @@ export function BeatEditor({ beats, bpm, beatsPerBar, durationMs, currentTimeMs,
     const errors = validateBeatMap(corrected, durationMs)
     if (errors.length > 0) { setError(errors.join(' ')); return }
     setError(null)
-    onApplyCorrection(createCorrection('offset', corrected, bpm, beatsPerBar))
+    const correctedDownbeat = downbeatTimeMs === null ? null : Math.max(0, downbeatTimeMs + offsetMs)
+    onApplyCorrection(createCorrection('offset', corrected, bpm, beatsPerBar, correctedDownbeat))
     setOffsetMs(0)
-  }, [beats, offsetMs, durationMs, bpm, beatsPerBar, onApplyCorrection])
+  }, [beats, offsetMs, durationMs, bpm, beatsPerBar, downbeatTimeMs, onApplyCorrection])
 
   const handleSetDownbeat = useCallback(() => {
-    const corrected = setDownbeat(beats, currentTimeMs)
-    onApplyCorrection(createCorrection('downbeat', corrected, bpm, beatsPerBar))
+    const selected = setDownbeat(beats, currentTimeMs)
+    if (selected === null) { setError('Add or detect beats before setting a downbeat.'); return }
+    setError(null)
+    onApplyCorrection(createCorrection('downbeat', beats, bpm, beatsPerBar, selected))
   }, [beats, currentTimeMs, bpm, beatsPerBar, onApplyCorrection])
 
   const handleTap = useCallback(() => {
@@ -55,7 +59,7 @@ export function BeatEditor({ beats, bpm, beatsPerBar, durationMs, currentTimeMs,
       : 500
     const tapBpm = Math.round(60_000 / avgInterval)
     setError(null)
-    onApplyCorrection(createCorrection('tap-tempo', corrected, tapBpm, beatsPerBar))
+    onApplyCorrection(createCorrection('tap-tempo', corrected, tapBpm, beatsPerBar, corrected[0] ?? null))
     setTaps([])
   }, [taps, durationMs, beatsPerBar, onApplyCorrection])
 
@@ -95,7 +99,7 @@ export function BeatEditor({ beats, bpm, beatsPerBar, durationMs, currentTimeMs,
       )}
 
       {error && <p className={styles.info} style={{ color: '#e87461' }}>{error}</p>}
-      <p className={styles.info}>{beats.length} beats · {beatsPerBar}/4 meter · version preserved</p>
+      <p className={styles.info}>{beats.length} beats · {beatsPerBar}/4 meter · downbeat {downbeatTimeMs === null ? 'unconfirmed' : `${downbeatTimeMs}ms`} · version preserved</p>
     </div>
   )
 }

@@ -83,7 +83,7 @@ export function nudgeTimestamp(
   deltaMs: number,
 ): TimedSyllable[] {
   const syll = syllables[syllableIndex]
-  if (!syll?.timeMs) return [...syllables]
+  if (!syll || syll.timeMs === null) return [...syllables]
   return syllables.map((s, i) =>
     i === syllableIndex ? { ...s, timeMs: Math.max(0, (s.timeMs ?? 0) + deltaMs) } : s,
   )
