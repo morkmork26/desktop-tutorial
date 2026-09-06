@@ -11,6 +11,8 @@ import { MemoryProjectRepository } from './repositories/MemoryProjectRepository'
 import { createImportAdapter } from './adapters/importAdapter'
 import type { LoopRange } from './domain/types'
 import styles from './App.module.css'
+import { Capacitor } from '@capacitor/core'
+import { AndroidSyncSpike } from './components/AndroidSyncSpike'
 
 const FIXTURE_DURATION_MS = 18_000
 const FIXTURE_BEATS = createSteadyBeatMap(120, 2_000, FIXTURE_DURATION_MS)
@@ -221,6 +223,8 @@ export default function App() {
       }
     }
   }, [repository, setRepository])
+
+  if (Capacitor.getPlatform() === 'android') return <AndroidSyncSpike />
 
   if (view === 'library') return <LibraryView importAdapter={importAdapter} />
   return <SyncLab />

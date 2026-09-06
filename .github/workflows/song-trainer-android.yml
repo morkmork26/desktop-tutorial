@@ -1,0 +1,74 @@
+name: Song Trainer Android
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'song-trainer/**'
+      - '.github/workflows/song-trainer-android.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'song-trainer/**'
+      - '.github/workflows/song-trainer-android.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: song-trainer-android-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: song-trainer
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: song-trainer/package-lock.json
+      - run: npm ci
+      - run: npm run fixtures
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm test
+      - run: npm run build
+
+  android:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: song-trainer
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: song-trainer/package-lock.json
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: gradle
+      - uses: android-actions/setup-android@v3
+      - uses: gradle/actions/setup-gradle@v4
+      - run: npm ci
+      - run: npm run fixtures
+      - run: npm run android:sync
+      - name: Unit tests, Android lint, APK, and AAB
+        working-directory: song-trainer/android
+        run: ./gradlew test lint assembleDebug bundleRelease
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rhythm-song-trainer-android
+          path: |
+            song-trainer/android/app/build/outputs/apk/debug/*.apk
+            song-trainer/android/app/build/outputs/bundle/release/*.aab
+          if-no-files-found: error
