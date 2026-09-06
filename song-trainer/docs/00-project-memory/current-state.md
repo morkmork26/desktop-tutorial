@@ -1,59 +1,35 @@
 # Current State
 
-Purpose: Current project phase, stable facts, blockers, and next recommended actions.
-Read when: Starting or resuming project work.
-Skip when: Only reading historical decisions or one-off command output.
-
 ## Phase
 
-V1 code-complete. All five milestones implemented. Awaiting native compilation and Windows QA.
+Android-only architecture rebaseline. The Tauri desktop prototype is retained temporarily as reference but is not the product target.
 
-## Current Top Objective
+## Current top objective
 
-Resolve native build prerequisites, run Cargo tests, and perform Windows audio QA.
+Preserve verified platform-neutral logic, scaffold Capacitor Android, and pass the native Media3/metronome synchronization spike before migrating full workflows.
 
-## Stable Facts
+## Stable facts
 
-- Product is a private, local-only Windows 11 Tauri application for rhythmic vocal phrasing practice.
-- `HTMLMediaElement.currentTime` is the canonical media position; persisted timing uses integer original-media milliseconds.
-- WAV and MP3 are the only intended V1 import claims.
-- Detector beat maps remain immutable; corrections create versions.
-- 49 tests pass across all domain, audio, and repository modules.
+- Product is private, offline, single-user, and Android-only (minimum API 29, target API 36).
+- Media3 player position will be the canonical media position; persisted timing stays integer original-media milliseconds.
+- WAV/MP3 are the only V1 format claims.
+- Detector beat maps are immutable; corrections create new versions.
+- React/TypeScript domain logic and UI concepts are reusable; Kotlin owns audio, import, analysis, Room, and lifecycle behavior.
+- Last pre-migration verification: strict types, lint, and 53 Vitest tests passed on 2026-09-07.
 
-## What Exists
+## Known issues
 
-- Full V1 feature implementation across all five milestones.
-- Product and architecture documentation plus CHIPAGENTS_HANDOFF.md.
-- React/TypeScript/Vite frontend with library, sync lab, beat editor, lyric sync, practice, and settings views.
-- Zustand stores for app state and settings.
-- Repository layer with SQL and in-memory implementations.
-- Import adapter abstraction for browser and Tauri environments.
-- Browser-based analysis engine with tempo detection.
-- Generated 60/90/120 BPM fixture script.
-- Tauri 2 host with restricted capabilities, safe-copy import command, and V1 SQLite migration.
+- The current app still runs the desktop/browser prototype and does not contain an Android project.
+- Main app workflow is not yet integrated or persistently reopenable.
+- Desktop-era Tauri, WaveSurfer, HTML audio, browser analyzer, and nested CI remain until the Android spike provides a safe replacement.
+- Physical Android synchronization, pitch, lifecycle, and storage behavior are unverified.
 
-## What Works
+## Next actions
 
-- All 49 Vitest tests pass.
-- Strict TypeScript, ESLint (zero warnings), and Vite production build pass.
-- Cargo fmt passes.
+1. Re-run the reusable TypeScript baseline and classify working-tree changes.
+2. Commit the Android-only requirements/architecture/design rebaseline separately.
+3. Add Capacitor 8 and an Android project.
+4. Build the Media3 transport plus native click processor spike against the 120 BPM fixture.
+5. Stop and reassess if hardware synchronization fails; otherwise proceed through A2–A5 in `CHIPAGENTS_HANDOFF.md`.
 
-## Known Issues
-
-- None in frontend code.
-
-## Current Blockers
-
-- Linux native compilation requires system dev headers (sudo access needed).
-- Windows WebView2 audio QA requires a Windows environment.
-
-## Next Recommended Actions
-
-1. Install native build prerequisites (pkg-config, libglib2.0-dev, libgtk-3-dev, libwebkit2gtk-4.1-dev, gcc).
-2. Run cargo test and cargo check.
-3. Set up GitHub Actions CI for frontend checks and Windows Tauri compilation.
-4. Perform Windows audio QA per docs/audio-qa.md checklist.
-
-## Last Updated
-
-2026-09-06
+Last updated: 2026-09-07

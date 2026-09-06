@@ -4,16 +4,16 @@ task_id: rhythm-song-trainer-v1
 parent_task_id: none
 task_kind: primary
 execution_status: active
-verification_status: partial
+verification_status: pending
 delivery_status: not-requested
-owner: morkmork26
+owner: root
 branch: main
 base_sha: HEAD
-revision: 4
+revision: 6
 verification_head: none
 verification_source_hash: none
 verified_at: none
-updated_at: 2026-09-06T21:17:00Z
+updated_at: 2026-09-06T20:36:07Z
 ---
 
 # Active Task
@@ -22,16 +22,16 @@ Purpose: Single primary task contract, verifier, retry state, and integration ch
 
 ## Status
 
-- Title: Build Rhythm Song Trainer V1
+- Title: Build Rhythm Song Trainer Android V1
 - Runtime Profile: Sprint
-- Risk Level: normal
+- Risk Level: high
 - Loop Budget: 3
 - Current Attempt: 1
-- Stop Condition: All milestones code-complete and verified, or concrete blocker recorded.
+- Stop Condition: Android A1–A5 gates pass with physical-device audio evidence, or a concrete blocker is recorded.
 
 ## Task
 
-- Objective: Build Rhythm Song Trainer V1
+- Objective: Migrate the reusable prototype into a verified Android-only Rhythm Song Trainer V1.
 - Scope: Full repository implementation and documentation
 - Allowed Files or Areas: Full repository
 - Forbidden Actions: unrelated edits, destructive operations, publication without authorization
@@ -45,21 +45,22 @@ Purpose: Single primary task contract, verifier, retry state, and integration ch
 
 ## Verifier
 
-- Required Checks: Frontend lint, typecheck, unit tests, production build; Rust format/test/check; browser smoke; Windows QA
-- Manual Acceptance: Windows audio QA pending
+- Required Checks: Frontend lint, typecheck, unit tests, production build; Gradle unit/lint/build; Android instrumented integration; physical-device audio QA
+- Manual Acceptance: Android phone/tablet workflow and physical audio QA pending
 - Evidence Needed: fresh command output bound to current HEAD
 
 ## Critic
 
 - Pass/Fail: partial-pass
-- Missing Evidence: Cargo test/check (blocked by system deps), Windows audio QA
-- False-Pass Risk: browser tests do not prove native behavior
-- Next Action: Install system dev headers, run Cargo checks, set up CI, Windows QA
+- Missing Evidence: Capacitor shell, Gradle checks, Android integration, and physical-device audio QA
+- False-Pass Risk: reusable browser/domain tests do not prove native audio, Room, file import, or Android lifecycle behavior
+- Next Action: Finish A0 rebaseline, then implement and test only the native synchronization spike
 
 ## Record
 
-- Verification Evidence: 49/49 Vitest pass, typecheck clean, lint clean, build clean, cargo fmt clean
+- Verification Evidence: pending after checkpoint
 - Delivery Status: not-requested
 - Docs Updated: status.md, current-state.md, active-task.md refreshed
-- Remaining Risk: Native compilation and Windows audio QA unverified
+- Remaining Risk: Android architecture has not yet been implemented or proven on hardware
 - Last Updated: 2026-09-06
+- Next Concrete Action: Rebaseline the product as Android-only, document the Capacitor/Kotlin/Media3/Room architecture and researched mobile UX, then migrate through an audio synchronization spike before feature integration.

@@ -1,186 +1,187 @@
-# Rhythm Song Trainer V1 — Codex Continuation Handoff
+# Rhythm Song Trainer — Android-Only Development Handoff
 
-Purpose: Give the next coding agent enough verified context to continue this repository.
+## Read this first
 
-## 1. Mission and finish line
+On 2026-09-07 the product target changed from Windows desktop to Android only. Do not continue the Tauri, Rust, Python sidecar, WebView2, NSIS, or Windows QA plan. The current source is a useful prototype, not a finished Android application.
 
-Build a private, desktop-first Windows 11 practice application for a singer who struggles with rhythmic phrasing. The V1 workflow:
+Repository location: `morkmork26/desktop-tutorial/song-trainer`
+
+Read in order: `AGENTS.md`, this handoff, `PRD.md`, `docs/architecture.md`, `docs/design.md`, then `docs/00-project-memory/active-task.md`.
+
+## Product finish line
 
 ```text
-import WAV/MP3
-  → analyze tempo and explicit beats
-  → manually correct the beat map
-  → paste and synchronize lyric syllables
-  → loop a phrase, slow playback, hear a synchronized metronome
-  → close and reopen without losing work
+pick local WAV/MP3 on Android
+  → copy it into private app storage
+  → analyze explicit beats and waveform offline
+  → correct beat map
+  → paste and sync lyric syllables
+  → practice with native playback, pitch-preserving speed, click, and A/B loop
+  → kill/relaunch app and recover all saved work
 ```
 
-Repository: `morkmork26/desktop-tutorial/song-trainer`
-Target: single-user, local-only, unsigned Windows 11 desktop application
-License: MIT for source code; user audio/lyrics are private
+Android 10/API 29 is the minimum. Target API 36. Produce an APK for testing and an AAB for future Play distribution. The app has no server, login, telemetry, scraping, download feature, or broad storage permission.
 
-No server, login, analytics, telemetry, or network access in V1.
+## Architecture to implement
 
-## 2. What is done (all 5 milestones code-complete)
+- Preserve React 19, strict TypeScript, Vite, Vitest, CSS Modules, and Zustand.
+- Add Capacitor 8 with Android only.
+- Build one typed Kotlin Capacitor plugin that owns Storage Access Framework import, private file copying, Media3 transport, PCM click mixing, MediaCodec decoding/analysis, waveform cache, Room persistence, and lifecycle recovery.
+- Make Media3 ExoPlayer position the only canonical playback position.
+- Mix metronome clicks with a custom Media3 AudioProcessor before Sonic speed adjustment; do not use JavaScript scheduling.
+- Use Room as the SQLite authority and validate all schema-versioned DTOs at the native boundary.
+- Replace WaveSurfer with a React canvas/SVG waveform fed by native cached peaks.
+- Keep all persisted timings as integer original-media milliseconds.
 
-### M1: Foundation and synchronization spike
-- React 19, TypeScript (strict), Vite, Vitest, ESLint (zero warnings), CSS Modules
-- Deterministic 60/90/120 BPM WAV fixture generator
-- Canonical AudioTransport with shared HTMLMediaElement
-- Web Audio MetronomeScheduler with lookahead scheduling
-- Beat/subdivision utilities with variable spacing
-- WaveSurfer waveform with beat markers, loop handles (container-relative), playhead
-- BeatGrid pulse visualization (quarter/eighth/sixteenth)
-- 9 AudioTransport tests, 7 MetronomeScheduler tests
-- Cargo fmt passes
+Full rationale and bridge contract: `docs/architecture.md`.
 
-### M2: Local library, import, and persistence
-- ProjectRepository interface with SQL (Tauri) and in-memory (browser) implementations
-- Zustand app store with library/project view routing
-- Import adapter abstraction (browser file picker + Tauri native dialog)
-- Library UI with search, import, project cards, delete confirmation
-- 7 MemoryProjectRepository tests
+## Existing code: retain, refactor, remove
 
-### M3: Analysis, waveform, and beat correction
-- Browser-based tempo detection via autocorrelation
-- Beat correction: global offset, downbeat anchor, tap tempo, validation
-- BeatEditor component with all correction tools
-- 4 beat correction tests
+Retain:
 
-### M4: Lyrics and synchronization
-- Lyric sync domain: synced lines, syllable split/merge, tap sync, nudge, clear
-- LyricSync component with keyboard-first tap workflow
-- 7 lyric sync tests
+- `src/domain/`: timing, lyrics, lyric sync, beat correction, sections, practice sessions, export rules.
+- `src/analysis/types.ts`: result and beat-map contracts, after DTO validation is added.
+- React editor/practice/library components as behavioral starting points.
+- CSS design tokens and Vitest suites.
+- deterministic legal fixture generator.
+- repository interface concepts and immutable detector/versioned correction rules.
 
-### M5: Practice workflow and V1 completion
-- Section management with validation and reordering
-- Practice session tracking with cumulative stats
-- Project export/import with schema validation (rhythm-song-trainer/project v1)
-- PracticeView with live syllable highlighting and section navigation
-- Settings panel: count-in, default speed, metronome volume, reduced motion
-- 3 section tests, 3 practice session tests, 3 export/import tests
+Refactor:
 
-### Rust backend (existing from initial checkpoint)
-- Safe WAV/MP3 import: validation, atomic copy, rollback, duplicate-safe naming
-- SQLite V1 migration with full relational schema
-- Tauri 2 host with restricted capabilities
-- 3 Rust import tests
-- Source formatted with cargo fmt
+- `src/audio/AudioTransport.ts` → `AudioTransport` interface plus `BrowserFixtureTransport` and `CapacitorAudioTransport`.
+- `src/repositories/SqlProjectRepository.ts` → `CapacitorProjectRepository`; Room executes native transactions.
+- `src/adapters/importAdapter.ts` → native plugin call.
+- `src/components/Waveform.tsx` → peak-data renderer with no media element.
+- `App.tsx` → Android navigation and an integrated saved workspace.
+- desktop CSS → compact/medium/expanded adaptive layouts with 48 dp targets and safe-area insets.
 
-### Verification summary
-- 49 Vitest tests across 10 files, all passing
-- Strict TypeScript (noUncheckedIndexedAccess, exactOptionalPropertyTypes)
-- ESLint zero warnings (recommendedTypeChecked + react-hooks + react-refresh)
-- Vite production build passes
-- Cargo fmt check passes
-- GitHub Actions CI configured (frontend + Rust + Windows build on tags)
+Remove after the audio spike passes:
 
-## 3. What remains
+- `src-tauri/`, all `@tauri-apps/*` dependencies, nested Windows workflow, WaveSurfer dependency, browser tempo analyzer from production, and Windows/Python instructions.
 
-### Must do before V1 release
-1. **Cargo test and cargo check** - SSL cert issue on dev machine; set `CARGO_HTTP_CAINFO` to a valid CA bundle, then run `cargo test --all-targets && cargo check`
-2. **Wire BeatEditor, LyricSync, PracticeView, and Settings into the main App** - Components exist but App.tsx currently only shows LibraryView and SyncLab; needs project-level view with tabs/panels for all editors
-3. **Connect analysis engine to import flow** - BrowserAnalysisEngine exists but is not called after import; need to analyze on import, store results, update project status
-4. **Python/librosa sidecar** - Browser stub works; Tauri needs PyInstaller-packaged sidecar for production analysis
-5. **Windows audio QA** - Run checklist in `docs/audio-qa.md` on Windows 11
+Do not delete Tauri first: keep it until Capacitor can build and the Android audio spike has passed, so working reference behavior remains available.
 
-### Should do
-6. **Keyboard shortcuts** - Transport controls (Space=play/pause, Left/Right=seek, etc.)
-7. **Count-in metronome** - Use settings store countInBeats before playback starts
-8. **Metadata export/import UI** - Domain logic exists, needs file save/load buttons
-9. **Missing audio recovery** - Detect missing audio file on project open, offer relink
-10. **Responsive tablet/mobile layout** - Base CSS exists, needs testing and polish
+## Known prototype defects already found
 
-### Nice to have
-11. **Undo/redo for beat corrections** - Version tracking exists in schema, needs UI
-12. **Practice history charts** - Stats computed, could visualize
-13. **Accessible focus indicators** - Some exist, audit needed
+- Main `App.tsx` only connects Library and a synthetic SyncLab; editors exist but are not a persisted end-to-end workflow.
+- Browser analysis exists but is not connected and creates a BPM grid from 0 rather than detecting intro phase.
+- Original SQL repository used the Tauri plugin instance with the wrong call signature; the working tree contains an uncommitted correction and expanded workspace methods.
+- Original Zustand selectors created new functions and could trigger unstable renders; the working tree contains corrections.
+- Lyric nudge treated 0 ms as absent; working-tree test/fix exists.
+- Downbeat anchoring was destroyed by timestamp sorting; working-tree model/test fix stores `downbeatTimeMs` separately.
+- The GitHub workflow is nested under `song-trainer/.github`, so GitHub never detects it at the parent repository root.
+- Older documentation falsely called all milestones complete. Treat this handoff and current status as authoritative.
 
-## 4. Architecture rules (do not break)
+Before migration, inspect the diff and preserve the platform-neutral corrections. Do not blindly commit Tauri-specific work.
 
-- `HTMLMediaElement.currentTime` is the ONLY canonical playback position
-- All saved timing is integer milliseconds in original-media time
-- Playback speed never rewrites stored timestamps
-- Detector beat maps are immutable; corrections create new versions
-- WAV and MP3 only until Windows QA proves otherwise
-- No accounts, telemetry, scraping, downloading, or network access
-- Imported audio is private app data, never committed or exported
+## Implementation plan
 
-## 5. Source map
+### A0 — Rebaseline and protect reusable behavior
 
-```
-src/
-  App.tsx                          - Main app shell (library + sync lab routing)
-  audio/
-    AudioTransport.ts              - Shared media element, canonical snapshot
-    AudioTransport.test.ts         - 9 tests
-    MetronomeScheduler.ts          - Web Audio click scheduling
-    MetronomeScheduler.test.ts     - 7 tests
-    useTransport.ts                - React hook via useSyncExternalStore
-  adapters/
-    importAdapter.ts               - Browser/Tauri import abstraction
-  analysis/
-    types.ts                       - AnalysisEngine interface, BeatMapVersion
-    BrowserAnalysisEngine.ts       - Tempo detection via autocorrelation
-  components/
-    BeatGrid.tsx                   - Beat pulse visualization
-    BeatEditor.tsx                 - Offset, downbeat, tap tempo correction
-    Waveform.tsx                   - WaveSurfer + beat/loop/playhead overlay
-    LyricSync.tsx                  - Paste lyrics, tap sync, syllable editing
-    PracticeView.tsx               - Live lyrics, section nav, stats
-    Settings.tsx                   - App preferences panel
-    library/
-      LibraryView.tsx              - Project list, search, import
-      ProjectCard.tsx              - Individual project card
-  domain/
-    types.ts                       - Beat, LoopRange, TimedSyllable, AnalysisResult
-    timing.ts + test               - Beat lookup, subdivision, loop validation (5 tests)
-    lyrics.ts + test               - Tokenization preserving punctuation (1 test)
-    lyricSync.ts + test            - Synced lines, split/merge, tap sync (7 tests)
-    beatCorrection.ts + test       - Offset, downbeat, tap tempo, validation (4 tests)
-    sections.ts + test             - Section CRUD, validation, reorder (3 tests)
-    practiceSession.ts + test      - Session stats, time formatting (3 tests)
-    projectExport.ts + test        - Schema export/import validation (3 tests)
-  repositories/
-    types.ts                       - ProjectRepository interface
-    SqlProjectRepository.ts        - Tauri SQL plugin implementation
-    MemoryProjectRepository.ts     - Browser/test in-memory implementation
-    MemoryProjectRepository.test   - 7 tests
-  stores/
-    useAppStore.ts                 - Zustand: view, projects, active project
-    useSettingsStore.ts            - Zustand: count-in, speed, volume, motion
-src-tauri/
-  src/lib.rs                       - Tauri plugins, migration, import command
-  src/import.rs                    - WAV/MP3 validation, atomic copy (3 tests)
-  src/main.rs                      - Entry point
-  migrations/0001_v1.sql           - Full relational schema
-  capabilities/default.json        - Restricted permissions
-```
+Acceptance:
 
-## 6. Baseline commands
+- Android-only requirements, architecture, design, timing, QA, and status agree.
+- Current TypeScript/domain tests pass before migration.
+- Platform-neutral working-tree fixes are separated from obsolete desktop changes.
+- Root CI path and Android workflow requirements are documented.
+
+### A1 — Android shell and native audio synchronization spike
+
+Work:
+
+- Add Capacitor 8 Android project; app ID `com.morkmork26.rhythmsongtrainer`.
+- Set min SDK 29 and target/compile SDK 36.
+- Implement typed plugin registration and fixture-copy command.
+- Implement Media3 load/play/pause/seek/speed/loop snapshots.
+- Implement custom click AudioProcessor using the explicit 120 BPM fixture map.
+- Add generation IDs and process/lifecycle recovery.
+- Build a minimal React spike screen using native transport only.
+
+Gate:
+
+- Debug APK builds.
+- On a physical device, 120 BPM fixture shows/hears no perceptible drift for two minutes.
+- Pause/resume, forward/back seek, 4-second loop, and 50/75/100% speed recover immediately without doubled/stale clicks.
+- If this fails, stop and change the audio pipeline before any editor migration.
+
+### A2 — Android import, Room, and library
+
+Work:
+
+- Use the system picker with MIME plus extension/header checks.
+- Stream into private internal storage through `.part`, fsync, atomic rename, rollback.
+- Build Room entities/DAOs/migrations for the existing normalized schema.
+- Implement schema-versioned native DTOs and Capacitor repository adapter.
+- Connect library search/recent order/status/delete/missing-file recovery.
+
+Gate:
+
+- Instrumented tests cover valid WAV/MP3, spoofed headers, cancellation, duplicate names, partial-copy cleanup, path isolation, Room migration, delete, process relaunch, and missing audio.
+
+### A3 — Native analysis and beat correction
+
+Work:
+
+- Decode WAV/MP3 via MediaExtractor/MediaCodec to mono PCM.
+- Produce versioned waveform peaks outside Room.
+- Implement onset envelope, autocorrelation tempo candidates, beat phase, progress/cancel, warnings, nullable confidence.
+- Connect waveform, beat/downbeat markers, offset, tap tempo, anchor, undo, and detector reset.
+
+Gate:
+
+- 60/90/120 BPM fixture BPM error ≤1 and median nearest-beat error ≤50 ms, including two-second intro phase.
+- Empty/unstable/suspicious audio produces a visible warning or failure, never fabricated success.
+- Detector map stays immutable and every accepted correction adds a version.
+
+### A4 — Lyrics and practice workflow
+
+Work:
+
+- Integrate paste/edit/reorder, syllable split/merge, tap sync, undo, ±25 ms nudge, range resync, and autosave.
+- Integrate stable practice lyrics, subdivisions, section navigation, A/B custom/line/section loops, speed chips, click, count-in, and sessions.
+- Implement metadata export/import through Android's document UI.
+- Restore state after rotation, background/foreground, and process recreation.
+
+Gate:
+
+- Complete import → analysis → correction → lyric sync → practice → force-stop/relaunch flow passes.
+- Timing remains invariant at every playback speed.
+
+### A5 — Mobile UX, accessibility, CI, release
+
+Work:
+
+- Implement the layouts in `docs/design.md`: bottom navigation/mini transport on compact windows; rail and supporting panes on wider windows.
+- Honor edge-to-edge insets, keyboard, predictive back, font scaling, reduced motion, TalkBack, landscape, split-screen, tablets, and foldables.
+- Put GitHub Actions at repository-root `.github/workflows/`; run Node gates, Gradle unit/lint, emulator instrumented smoke, debug APK, and release AAB lanes.
+- Record device QA and generate unsigned local artifacts unless signing is explicitly approved later.
+
+Gate:
+
+- No touch target under 48 dp and no core task depends on color, hover, long press, or an unlabeled icon.
+- Phone/tablet screenshots show real states, not mock data.
+- All automated gates pass and physical-device audio QA is recorded.
+
+## Design standard
+
+Follow `docs/design.md`. The key rule is utility before decoration. Avoid generic generated dashboards, gradient hero copy, glass cards, arbitrary rounded containers, fake charts, fabricated album art, unexplained icons, and hidden core controls. Reference Android's official adaptive/accessibility guidance and successful music-practice interaction patterns, but do not clone another app.
+
+## Verification commands after Capacitor exists
 
 ```bash
-npm install
-npm run fixtures
-npm run typecheck    # strict TS
-npm run lint         # zero warnings
-npm test             # 49 tests
-npm run build        # production bundle
-
-# Rust (needs CARGO_HTTP_CAINFO if corporate proxy)
-cd src-tauri
-cargo fmt --all -- --check
-cargo test --all-targets
-cargo check
+npm ci
+npm run typecheck
+npm run lint
+npm test
+npm run build
+npx cap sync android
+cd android
+./gradlew test lint assembleDebug bundleRelease
+./gradlew connectedDebugAndroidTest   # emulator/device lane
 ```
 
-## 7. First prompt for the receiving agent
+Run all relevant checks again after the final source change. Browser tests prove shared domain behavior only; they do not prove native file, Room, lifecycle, pitch, click, or latency behavior.
 
-> Continue Rhythm Song Trainer V1. Read AGENTS.md and CHIPAGENTS_HANDOFF.md first.
-> All 5 milestones are code-complete with 49 passing tests.
-> Priority tasks:
-> 1. Wire BeatEditor, LyricSync, PracticeView, and Settings into the project view (components exist, just need integration into App.tsx)
-> 2. Connect BrowserAnalysisEngine to the import flow
-> 3. Add keyboard shortcuts for transport controls
-> 4. Run cargo test and cargo check (set CARGO_HTTP_CAINFO if needed)
-> 5. Do not break existing tests or architecture rules
+## Immediate next action
+
+Complete A0: run the current checks, classify the uncommitted changes, commit the Android rebaseline separately, then scaffold Capacitor Android and implement only the native audio spike. Do not build polished screens before that gate passes.

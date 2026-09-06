@@ -16,10 +16,10 @@ Skip when: Never skip during project work.
 ## Project Identity
 
 - Name: Rhythm Song Trainer
-- One-sentence positioning: A private Windows 11 desktop app for practicing rhythmic vocal phrasing against editable beat and lyric timing.
-- Project type: Tauri 2 desktop application with a React/TypeScript frontend, Rust host, SQLite persistence, and packaged Python/librosa analysis.
-- Current phase: V1 implementation, beginning with the synchronization spike.
-- Current top objective: Prove that playback, beat display, looping, speed, and metronome share a reliable media clock before expanding the editor.
+- One-sentence positioning: A private, offline Android app for practicing rhythmic vocal phrasing against editable beat and lyric timing.
+- Project type: Android-only Capacitor 8 application with a React/TypeScript UI, Kotlin native plugin, Media3 audio, Room persistence, and local PCM analysis.
+- Current phase: Android rebaseline and native synchronization spike.
+- Current top objective: Prove Media3 playback, click mixing, looping, speed, and React display share one reliable native timeline before migrating editors.
 
 ## Runtime Profile
 
@@ -49,20 +49,20 @@ Reuse content already present in the current context; do not reopen an unchanged
 - Cross-agent takeover: `CHIPAGENTS_HANDOFF.md`, then the active task and current state
 - UI/design: `docs/design.md`, then `src/` CSS Modules
 - Frontend: `src/`, especially `src/audio/` and `src/domain/`
-- Backend/API/database: `src-tauri/src/`, `src-tauri/migrations/`, and `src/repositories/`
+- Backend/API/database: `android/` after scaffolding, Kotlin plugin/Room code, and `src/repositories/`
 - Auth/payment/permissions:
 - PRD/requirements/source review: `PRD.md` plus concrete source artifacts
 - Deployment/operations: `README.md`, `docs/status.md`, and `.github/workflows/`
 - Testing/bug fixing: `docs/00-project-memory/verifier-map.md`, then colocated tests
 - Recovery: `docs/00-project-memory/current-state.md` and the active task
-- Audit/release: `docs/audio-qa.md`, `docs/architecture.md`, and release workflow files
+- Audit/release: `docs/audio-qa.md`, `docs/architecture.md`, and repository-root Android workflow files
 
 ## Project Rules
 
-- `HTMLMediaElement.currentTime` is the only canonical playback position. Never advance lyric, beat, loop, or waveform time with a separate interval.
+- Media3 ExoPlayer position is the only canonical playback position. React may poll native snapshots for drawing but never invents media time.
 - Persist timing as integer milliseconds in original-media time. Playback speed must never rewrite saved timing.
 - Preserve detector results. User corrections create new beat-map versions and can reset to the immutable detector map.
-- Support WAV and MP3 only until Windows QA proves additional formats.
+- Support WAV and MP3 only until Android device QA proves additional formats.
 - Keep the application local-only: no accounts, telemetry, scraping, downloading, or network access.
 - Imported audio is private app data. Never commit it or include it in metadata exports.
 
