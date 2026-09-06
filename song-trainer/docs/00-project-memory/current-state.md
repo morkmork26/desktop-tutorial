@@ -16,7 +16,7 @@ Pass the Media3/metronome synchronization spike on a physical Android device bef
 - Detector beat maps are immutable; corrections create new versions.
 - React/TypeScript domain logic and UI concepts are reusable; Kotlin owns audio, import, analysis, Room, and lifecycle behavior.
 - Last pre-migration verification: strict types, lint, and 53 Vitest tests passed on 2026-09-07.
-- GitHub Actions run 34059849771 passed frontend checks, Gradle unit/lint/build, debug APK, release AAB, and artifact upload.
+- GitHub Actions run 34060062249 passed on the current documentation checkpoint; code-equivalent run 34059849771 passed frontend checks, Gradle unit/lint/build, debug APK, release AAB, and artifact upload.
 
 ## Known issues
 
@@ -33,3 +33,7 @@ Pass the Media3/metronome synchronization spike on a physical Android device bef
 4. If it passes, implement A2 Android import and Room persistence, then A3–A5 in `CHIPAGENTS_HANDOFF.md`.
 
 Last updated: 2026-09-07
+
+## Cross-device takeover
+
+The authoritative continuation instructions are in `CHIPAGENTS_HANDOFF.md`, including a copy-paste prompt for another Codex device. The source checkpoint is commit `dbbca5c` on `main`; do not infer completion from CI alone because physical Android audio QA is still pending.

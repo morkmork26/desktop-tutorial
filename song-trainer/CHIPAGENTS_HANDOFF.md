@@ -8,6 +8,23 @@ Repository location: `morkmork26/desktop-tutorial/song-trainer`
 
 Read in order: `AGENTS.md`, this handoff, `PRD.md`, `docs/architecture.md`, `docs/design.md`, then `docs/00-project-memory/active-task.md`.
 
+## Copy-paste takeover prompt for the next Codex
+
+Use this prompt when opening the project from another device:
+
+> Continue Rhythm Song Trainer from the repository state documented in `song-trainer/CHIPAGENTS_HANDOFF.md`. The target is Android only; do not resume the retired Tauri/Windows plan. First read the project `AGENTS.md`, this handoff, `docs/status.md`, `docs/00-project-memory/current-state.md`, and `docs/00-project-memory/active-task.md`. The current source checkpoint is commit `dbbca5c` on `main`. A1 (Capacitor shell plus Media3 native synchronization spike) compiles and passed GitHub Actions run `34060062249`; the debug APK artifact was produced by run `34059849771`. The next required action is physical-device A1 audio QA using `docs/audio-qa.md`. Do not start A2 or redesign the UI until that gate passes. If hardware QA passes, implement A2 (Android WAV/MP3 import, private atomic copy, Room persistence, and library reopen/delete/missing-file flows), preserving the existing contracts and verification gates. If hardware QA fails, repair the native audio pipeline first. Keep all claims tied to fresh tests or recorded device evidence.
+
+### Exact takeover checkpoint
+
+- Repository: `morkmork26/desktop-tutorial`
+- Product directory: `song-trainer/`
+- Branch: `main`
+- Current commit: `dbbca5c` (`Record verified Android A1 checkpoint`)
+- Working tree at handoff: clean
+- Latest successful workflow: `34060062249` on the current commit
+- APK/AAB artifact run: `34059849771` on the preceding code-equivalent checkpoint
+- Current completion estimate: approximately 20–25% of the full Android V1; A0 is complete, A1 is code/CI complete but hardware-gated, and A2–A5 remain.
+
 ## Product finish line
 
 ```text
