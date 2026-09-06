@@ -37,7 +37,7 @@ Media3 ExoPlayer (authoritative position)
 
 Events are emitted on load, ready, play, pause, seek completion, discontinuity, speed change, loop restart, end, and error. Every event carries a monotonically increasing generation; React ignores stale events from an earlier load or seek.
 
-The metronome is not a second player or JavaScript timer. A custom PCM processor mixes accent and regular click samples at explicit beat timestamps before Media3 applies speed. This should preserve alignment through seek, looping, and rate changes. The synchronization spike must prove the design on physical Android hardware before editors are migrated.
+The metronome is not a second player or JavaScript timer. A custom PCM processor mixes accent and regular click samples at explicit beat timestamps before Media3 applies speed. Media3 provides the processor's exact post-flush media origin through `StreamMetadata.positionOffsetUs`, so load, seek, and loop discontinuities reset the click cursor to the pipeline's actual position. This should preserve alignment through seek, looping, and rate changes. The synchronization spike must prove the design on physical Android hardware before editors are migrated.
 
 ## Native plugin surface
 

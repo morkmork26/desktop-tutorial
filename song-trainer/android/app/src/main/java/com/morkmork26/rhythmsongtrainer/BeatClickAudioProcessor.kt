@@ -3,12 +3,14 @@ package com.morkmork26.rhythmsongtrainer
 import androidx.media3.common.C
 import androidx.media3.common.audio.AudioProcessor
 import androidx.media3.common.audio.BaseAudioProcessor
+import androidx.media3.common.util.UnstableApi
 import java.nio.ByteBuffer
 import kotlin.math.PI
 import kotlin.math.max
 import kotlin.math.sin
 
 /** Mixes metronome clicks into original-time PCM before Media3 changes playback speed. */
+@UnstableApi
 class BeatClickAudioProcessor : BaseAudioProcessor() {
     @Volatile private var enabled = false
     @Volatile private var volume = 0.5f
@@ -42,7 +44,8 @@ class BeatClickAudioProcessor : BaseAudioProcessor() {
         return inputAudioFormat
     }
 
-    override fun onFlush() {
+    override fun onFlush(streamMetadata: AudioProcessor.StreamMetadata) {
+        requestedStartMs = streamMetadata.positionOffsetUs / 1000
         resetCursor()
     }
 
