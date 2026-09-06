@@ -1,0 +1,17 @@
+.shell {
+  position: relative;
+  overflow: hidden;
+  min-height: 136px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(180deg, #1c1a17, #151412);
+}
+
+.wave { position: relative; z-index: 1; }
+.markers { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
+.beat, .downbeat { position: absolute; inset-block: 12px; width: 1px; background: rgb(255 255 255 / 20%); }
+.downbeat { width: 2px; background: rgb(242 178 92 / 72%); }
+.playhead { position: absolute; z-index: 5; inset-block: 0; width: 2px; background: var(--cream); pointer-events: none; }
+.loop { position: absolute; z-index: 3; inset-block: 0; border-inline: 2px solid var(--mint); background: rgb(126 199 174 / 11%); pointer-events: none; }
+.handle { position: absolute; inset-block: 0; left: -8px; width: 16px; border: 0; background: transparent; cursor: ew-resize; pointer-events: auto; }
+.endHandle { right: -8px; left: auto; }

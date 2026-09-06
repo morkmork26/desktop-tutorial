@@ -1,0 +1,4 @@
+.grid { display: grid; grid-auto-flow: column; gap: .5rem; justify-content: center; }
+.cell { display: grid; place-items: center; width: 3rem; aspect-ratio: 1; border-radius: 999px; color: var(--muted); background: var(--surface-raised); font: 600 1rem/1 var(--mono); transition: 100ms ease; }
+.active { color: #17140f; background: var(--accent); transform: scale(1.08); box-shadow: 0 0 0 6px rgb(243 181 98 / 10%); }
+@media (prefers-reduced-motion: reduce) { .cell { transition: none; } }

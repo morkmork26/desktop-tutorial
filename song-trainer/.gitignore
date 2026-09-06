@@ -1,0 +1,16 @@
+node_modules/
+dist/
+src-tauri/target/
+analyzer/.venv/
+analyzer/build/
+analyzer/dist/
+__pycache__/
+.pytest_cache/
+.project-runtime/
+*.log
+*.sqlite
+*.sqlite3
+private-audio/
+cache/
+public/fixtures/*.wav
+!public/fixtures/.gitkeep

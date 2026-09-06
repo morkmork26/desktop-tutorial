@@ -1,0 +1,30 @@
+[package]
+name = "rhythm-song-trainer"
+version = "0.1.0"
+description = "Private rhythmic phrasing practice application"
+authors = ["morkmork26"]
+edition = "2021"
+license = "MIT"
+
+[lib]
+name = "rhythm_song_trainer_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[[bin]]
+name = "rhythm-song-trainer"
+path = "src/main.rs"
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tauri = { version = "2", features = [] }
+tauri-plugin-dialog = "2"
+tauri-plugin-sql = { version = "2", features = ["sqlite"] }
+thiserror = "2"
+uuid = { version = "1", features = ["v4"] }
+
+[dev-dependencies]
+tempfile = "3"
